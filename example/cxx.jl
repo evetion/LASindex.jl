@@ -8,7 +8,7 @@ cxxinclude("~/git/LAStools/LASlib/inc/lasreader_txt.hpp")  # random header
 
 # Read .laz file
 a = @cxxnew LASreadOpener()
-@cxx a -> set_file_name(pointer("~/Desktop/01608_4.laz"))
+@cxx a -> set_file_name(pointer("~/01608_4.laz"))
 reader = @cxx a -> open()
 p = @cxx reader -> read_point()
 p = @cxx reader -> point
@@ -17,7 +17,7 @@ y = @cxx p -> get_Y()
 z = @cxx p -> get_Z()
 
 # Read .lax file
-cxxinclude("/Users/epta/git/LAStools/LASzip/src/lasindex.hpp")
+cxxinclude("~/git/LAStools/LASzip/src/lasindex.hpp")
 i = @cxxnew LASindex()
-@cxx i -> read(pointer("/Users/epta/Desktop/01608_4.lax"))
+@cxx i -> read(pointer("~/01608_4.lax"))
 si = @cxx i -> get_spatial()
