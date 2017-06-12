@@ -1,3 +1,4 @@
+using FileIO
 
 type LaxHeader
     version::UInt32
@@ -17,10 +18,10 @@ type LaxQuadtreeHeader
     levels::UInt32
     level_index::UInt32
     implicit_levels::UInt32
-    min_x::Float32
-    max_x::Float32
-    min_y::Float32
-    max_y::Float32
+    min_x::Float64
+    max_x::Float64
+    min_y::Float64
+    max_y::Float64
 end
 
 
@@ -33,10 +34,10 @@ function Base.read(io::IO, ::Type{LaxQuadtreeHeader})
         read(io, UInt32),
         read(io, UInt32),
         read(io, UInt32),
-        read(io, Float32),
-        read(io, Float32),
-        read(io, Float32),
-        read(io, Float32)
+        Float64(read(io, Float32)),
+        Float64(read(io, Float32)),
+        Float64(read(io, Float32)),
+        Float64(read(io, Float32))
     )
 end
 
@@ -73,10 +74,10 @@ type LaxIntervalCellInterval
     _end::UInt32  # reserved
 end
 
-function Base.read(io::IO, ::Type{LaxIntervalCellInterval})
-    header = LaxIntervalCellInterval(
-        read(io, UInt32),
-        read(io, UInt32)
+function Base.read(io::IO, ::Type{CartesianRange})
+    range = CartesianRange(
+        CartesianIndex(read(io, UInt32)),
+        CartesianIndex(read(io, UInt32))
     )
 end
 
@@ -108,9 +109,13 @@ function load(s::Stream{format"LAX"})
     for i = 1:ncells
         # Read cell and its intervals
         cell = read(s, LaxIntervalCell)
-        intervals = Vector{LaxIntervalCellInterval}(cell.number_intervals)
+        intervals = Vector{CartesianRange}(cell.number_intervals)
+
         for j = 1:cell.number_intervals
-            intervals[j] = read(s, LaxIntervalCellInterval)
+            intervals[j] = read(s, CartesianRange)
+        end
+        if cell.number_intervals > 1
+            @show intervals
         end
 
         # Create cell in qt with intervals
@@ -120,4 +125,6 @@ function load(s::Stream{format"LAX"})
 
     # assert we are at end of file
     @assert eof(s)
+
+    return qt
 end
