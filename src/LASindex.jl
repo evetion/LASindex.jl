@@ -4,6 +4,7 @@ module LASindex
 
     using FileIO
     using RegionTrees
+    using StaticArrays 
 
     export
     quadtree

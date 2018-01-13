@@ -70,14 +70,14 @@ function Base.read(io::IO, ::Type{LaxIntervalCell})
 end
 
 type LaxIntervalCellInterval
-    start::UInt32
-    _end::UInt32  # reserved
+    _start::UInt32
+    _end::UInt32
 end
 
-function Base.read(io::IO, ::Type{CartesianRange})
-    range = CartesianRange(
-        CartesianIndex(read(io, UInt32)),
-        CartesianIndex(read(io, UInt32))
+function Base.read(io::IO, ::Type{UnitRange{T}}) where T <: Integer
+    range = UnitRange(
+        read(io, UInt32),
+        read(io, UInt32)
     )
 end
 
@@ -96,35 +96,37 @@ function load(s::Stream{format"LAX"})
     qheader = read(s, LaxQuadtreeHeader)
     # if not, qsignature and version are missing
     # but we ignore this other lax type for now
-    @show qheader.qsignature
+    qheader.level_index != 0 && error("Level index other than 0 is not supported yet.")
 
     # create quadtree
     qt = quadtree(qheader)
-    @show qt
 
     # read cell header
     iheader = read(s, LaxIntervalHeader)
     ncells = iheader.number_cells
 
+    # total number of points
+    total_points = 0
+
     for i = 1:ncells
         # Read cell and its intervals
-        cell = read(s, LaxIntervalCell)
-        intervals = Vector{CartesianRange}(cell.number_intervals)
+        qcell = read(s, LaxIntervalCell)
+        total_points += qcell.number_points
+        intervals = Vector{UnitRange{Integer}}(qcell.number_intervals)
 
-        for j = 1:cell.number_intervals
-            intervals[j] = read(s, CartesianRange)
-        end
-        if cell.number_intervals > 1
-            @show intervals
+        for j = 1:qcell.number_intervals
+            intervals[j] = read(s, UnitRange{Integer})
         end
 
         # Create cell in qt with intervals
-        quadtree!(qt, cell.cell_index, intervals)
+        quadtree!(qt, qcell.cell_index, intervals)
 
     end
 
     # assert we are at end of file
     @assert eof(s)
+
+    info("Processed $(get(s.filename, ".lax")) with $(total_points) points.")
 
     return qt
 end
