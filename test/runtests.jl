@@ -50,3 +50,19 @@ root = Cell(SVector(0., 0), SVector(1., 1))
 root = Cell(SVector(0., 0), SVector(1., 1), Vector{UnitRange{Int}}())
 LASindex.quadtree!(root, 1, [2:5])
 @test root[1,1].data == [2:5]
+
+# Merge UnitRanges that do have overlap
+r = Vector{UnitRange{Integer}}([1:5, 2:4, 12:13, 14:16])
+@test LASindex.merge(r) == Vector{UnitRange{Integer}}([1:5, 12:16])
+r = Vector{UnitRange{Integer}}([1:5, 2:6, 12:13, 14:16, -1:2])
+@test LASindex.merge(r) == Vector{UnitRange{Integer}}([-1:6, 12:16])
+r = Vector{UnitRange{Integer}}()
+@test LASindex.merge(r) == Vector{UnitRange{Integer}}()
+r = Vector{UnitRange{Integer}}([1:5])
+@test LASindex.merge(r) == Vector{UnitRange{Integer}}([1:5])
+
+# Test spatial intersection
+bbox = SVector(955000.0, 955002.0, 885000.0, 988800.0)  # small intersection
+@test LASindex.intersect(qt, bbox) == Vector{UnitRange{Integer}}()
+bbox = SVector(955000.0, 985002.0, 885000.0, 988800.0)  # fully overlaps
+@test LASindex.intersect(qt, bbox) == Vector{UnitRange{Integer}}([1:1924631])

@@ -12,7 +12,7 @@ end
 
 type LaxQuadtreeHeader
     ssignature::UInt32  # LASS
-    stype::UInt32  #
+    stype::UInt32
     qsignature::UInt32  # LASQ
     version::UInt32
     levels::UInt32
@@ -76,8 +76,8 @@ end
 
 function Base.read(io::IO, ::Type{UnitRange{T}}) where T <: Integer
     range = UnitRange(
-        read(io, UInt32),
-        read(io, UInt32)
+        Int64(read(io, UInt32))+1,  # .lax uses 0 based indices
+        Int64(read(io, UInt32))+1   # Int32 could theoretically overflow
     )
 end
 

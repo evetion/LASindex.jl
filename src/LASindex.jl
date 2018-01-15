@@ -11,6 +11,7 @@ module LASindex
 
     include("fileio.jl")
     include("quadtree.jl")
+    include("spatial.jl")
     include("util.jl")
 
     function __init__()
