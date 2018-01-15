@@ -13,7 +13,7 @@ julia> using FileIO
 
 julia> laxfile = joinpath("sample", "Palm Beach Post Hurricane.lax");
 julia> qt = load(laxfile)
-INFO: Processed /Users/epta/.julia/v0.6/LASindex/sample/Palm Beach Post Hurricane.lax with 1924631 points.
+INFO: Processed Palm Beach Post Hurricane.lax with 1924631 points.
 Cell: RegionTrees.HyperRectangle{2,Float64}([955000.0, 885000.0], [32000.0, 32000.0])
 
 julia> using StaticArrays
