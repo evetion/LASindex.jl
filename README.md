@@ -25,6 +25,7 @@ julia> r = LASindex.intersect(qt, bbox)
 ```
 
 The resulting ranges can be used in combination with LasIO or LazIO to stream a small subset of a (larger than memory) dataset.
+Note that all points inside the bounding box are given, but not all points given are inside the bounding box. In other words, because of how `lasindex` groups ranges together, some ranges will include points outside the bounding box.
 
 ### Background
 LAX files are quadtree indexes used by the LASTools suite [1] if present. You can generate them with `lasindex -i *.laz`[2]. There's a good introduction to lasindex here [3]. 
