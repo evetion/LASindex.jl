@@ -25,6 +25,14 @@ julia> r = LASindex.intersect(qt, bbox)
 ```
 
 The resulting ranges can be used in combination with LasIO or LazIO to stream a small subset of a (larger than memory) dataset.
+
+```julia
+using LasIO
+header, points = load("Palm Beach Post Hurricane.las", mmap=true)
+
+intersected_points = points[LASindex.intersect(qt, bbox)]
+```
+
 Note that all points inside the bounding box are given, but not all points given are inside the bounding box. In other words, because of how `lasindex` groups ranges together, some ranges will include points outside the bounding box.
 
 ### Background
