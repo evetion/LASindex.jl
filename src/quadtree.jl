@@ -13,7 +13,7 @@ end
 """Split a quadtree until the requested index is reached."""
 function quadtree!(root::RegionTrees.Cell, index::Integer)
     places = zlevels(index)
-    places = flipdim(places, 1)  # bottom up
+    places = reverse(places, dims=1)  # bottom up
 
     for place in places
         (place != 0) && (isleaf(root)) && (split!(root))

@@ -1,6 +1,6 @@
 using FileIO
 
-type LaxHeader
+struct LaxHeader
     version::UInt32
 end
 
@@ -10,7 +10,7 @@ function Base.read(io::IO, ::Type{LaxHeader})
         )
 end
 
-type LaxQuadtreeHeader
+struct LaxQuadtreeHeader
     ssignature::UInt32  # LASS
     stype::UInt32
     qsignature::UInt32  # LASQ
@@ -41,7 +41,7 @@ function Base.read(io::IO, ::Type{LaxQuadtreeHeader})
     )
 end
 
-type LaxIntervalHeader
+struct LaxIntervalHeader
     signature::UInt32
     version::UInt32
     number_cells::UInt32
@@ -55,7 +55,7 @@ function Base.read(io::IO, ::Type{LaxIntervalHeader})
     )
 end
 
-type LaxIntervalCell
+struct LaxIntervalCell
     cell_index::Int32
     number_intervals::UInt32
     number_points::UInt32
@@ -69,7 +69,7 @@ function Base.read(io::IO, ::Type{LaxIntervalCell})
     )
 end
 
-type LaxIntervalCellInterval
+struct LaxIntervalCellInterval
     _start::UInt32
     _end::UInt32
 end
@@ -112,7 +112,7 @@ function load(s::Stream{format"LAX"})
         # Read cell and its intervals
         qcell = read(s, LaxIntervalCell)
         total_points += qcell.number_points
-        intervals = Vector{UnitRange{Integer}}(qcell.number_intervals)
+        intervals = Vector{UnitRange{Integer}}(undef, qcell.number_intervals)
 
         for j = 1:qcell.number_intervals
             intervals[j] = read(s, UnitRange{Integer})
@@ -126,7 +126,7 @@ function load(s::Stream{format"LAX"})
     # assert we are at end of file
     @assert eof(s)
 
-    info("Processed $(get(s.filename, ".lax")) with $(total_points) points.")
+    @info("Processed $(s.filename) with $(total_points) points.")
 
     return qt
 end

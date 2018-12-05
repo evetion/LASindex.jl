@@ -1,3 +1,4 @@
 julia 0.7
 RegionTrees 0.2.0
 FileIO
+StaticArrays

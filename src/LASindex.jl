@@ -1,10 +1,8 @@
-__precompile__()
-
 module LASindex
 
     using FileIO
     using RegionTrees
-    using StaticArrays 
+    using StaticArrays
 
     export
     quadtree

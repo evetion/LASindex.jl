@@ -2,7 +2,7 @@ using LASindex
 using FileIO
 using RegionTrees
 using StaticArrays
-using Base.Test 
+using Test
 
 workdir = dirname(@__FILE__)
 
