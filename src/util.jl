@@ -1,5 +1,8 @@
 """Merge vector of UnitRanges into Vector of UnitRanges that do not overlap."""
 function merge(ranges::Vector{UnitRange{Integer}})
+    # prevent unwanted mutation
+    ranges = copy(ranges)
+
     # Skip if there's nothing to merge
     length(ranges) <= 1 && (return ranges)
 
