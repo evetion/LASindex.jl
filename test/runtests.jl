@@ -2,7 +2,7 @@ using LASindex
 using FileIO
 using RegionTrees
 using StaticArrays
-using Base.Test 
+using Test
 
 workdir = dirname(@__FILE__)
 
@@ -53,6 +53,8 @@ LASindex.quadtree!(root, 1, [2:5])
 
 # Merge UnitRanges that do have overlap
 r = Vector{UnitRange{Integer}}([1:5, 2:4, 12:13, 14:16])
+@test LASindex.merge(r) == Vector{UnitRange{Integer}}([1:5, 12:16])
+# and again to make sure it's not mutating
 @test LASindex.merge(r) == Vector{UnitRange{Integer}}([1:5, 12:16])
 r = Vector{UnitRange{Integer}}([1:5, 2:6, 12:13, 14:16, -1:2])
 @test LASindex.merge(r) == Vector{UnitRange{Integer}}([-1:6, 12:16])
