@@ -1,5 +1,6 @@
 name = "LASindex"
 uuid = "f5cc2397-9d3e-5971-afd7-e1f28e1d1eef"
+version = "0.1"
 
 [deps]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
